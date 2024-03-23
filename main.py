@@ -3,28 +3,30 @@ import pandas as pd
 import pickle
 
 app = Flask(__name__)
-data = pd.read_csv('final_dataset.csv')
+data = pd.read_csv('cleaned_data.csv')
 pipe = pickle.load(open("RidgeModel.pkl", 'rb'))
 
 @app.route('/')
 def index():
-    bedrooms = sorted(data['beds'].unique())
-    bathrooms = sorted(data['baths'].unique())
-    sizes = sorted(data['size'].unique())
-    zip_codes = sorted(data['zip_code'].unique())
+    housesize = sorted(data['total_sqft'].unique())
+    bathrooms = sorted(data['bath'].unique())
+    beds = sorted(data['size'].unique())
+    area = sorted(data['area_type'].unique())
+    balcony = sorted(data['balcony'].unique())
 
-    return render_template('index.html', bedrooms=bedrooms, bathrooms=bathrooms, sizes=sizes, zip_codes=zip_codes)
+    return render_template('index.html', housesize=housesize, bathrooms=bathrooms, beds=beds, area= area, balcony=balcony)
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    bedrooms = request.form.get('beds')
-    bathrooms = request.form.get('baths')
-    size = request.form.get('size')
-    zipcode = request.form.get('zip_code')
+    housesize = request.form.get('total_sqft')
+    bathrooms = request.form.get('bath')
+    beds = request.form.get('size')
+    area = request.form.get('area_type')
+    balcony = request.form.get('balcony')
 
     # Create a DataFrame with the input data
-    input_data = pd.DataFrame([[bedrooms, bathrooms, size, zipcode]],
-                               columns=['beds', 'baths', 'size', 'zip_code'])
+    input_data = pd.DataFrame([[housesize,bathrooms,beds,area,balcony]],
+                               columns=['total_sqft','bath','size','area_type','balcony'])
 
     print("Input Data:")
     print(input_data)
@@ -48,37 +50,39 @@ import pandas as pd
 import pickle
 
 app = Flask(__name__)
-data = pd.read_csv('final_dataset.csv')
+data = pd.read_csv('cleaned_data.csv')
 pipe = pickle.load(open("RidgeModel.pkl", 'rb'))
 
 @app.route('/')
 def index():
-    bedrooms = sorted(data['beds'].unique())
-    bathrooms = sorted(data['baths'].unique())
-    sizes = sorted(data['size'].unique())
-    zip_codes = sorted(data['zip_code'].unique())
+    housesize = sorted(data['total_sqft'].unique())
+    bathrooms = sorted(data['bath'].unique())
+    beds = sorted(data['size'].unique())
+    area = sorted(data['area_type'].unique())
+    balcony = sorted(data['balcony'].unique())
 
-    return render_template('index.html', bedrooms=bedrooms, bathrooms=bathrooms, sizes=sizes, zip_codes=zip_codes)
+    return render_template('index.html', housesize=housesize, bathrooms=bathrooms, beds=beds, area= area, balcony=balcony)
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    bedrooms = request.form.get('beds')
-    bathrooms = request.form.get('baths')
-    size = request.form.get('size')
-    zipcode = request.form.get('zip_code')
+    housesize = request.form.get('total_sqft')
+    bathrooms = request.form.get('bath')
+    beds = request.form.get('size')
+    area = request.form.get('area_type')
+    balcony = request.form.get('balcony')
 
     # Create a DataFrame with the input data
-    input_data = pd.DataFrame([[bedrooms, bathrooms, size, zipcode]],
-                               columns=['beds', 'baths', 'size', 'zip_code'])
+    input_data = pd.DataFrame([[housesize,bathrooms,beds,area,balcony]],
+                               columns=['total_sqft','bath','size','area_type','balcony'])
 
     print("Input Data:")
     print(input_data)
 
     # Convert 'baths' column to numeric with errors='coerce'
-    input_data['baths'] = pd.to_numeric(input_data['baths'], errors='coerce')
+    input_data['bath'] = pd.to_numeric(input_data['bath'], errors='coerce')
 
     # Convert input data to numeric types
-    input_data = input_data.astype({'beds': int, 'baths': float, 'size': float, 'zip_code': int})
+    input_data = input_data.astype({'total_sqft': float, 'bath': int, 'size': int, 'area_type': str, 'balcony':int })
 
     # Handle unknown categories in the input data
     for column in input_data.columns:
